@@ -1,6 +1,8 @@
-class Precipitation:
-    def __init__(self):
-        self.none = 1
-        self.rain = 2
-        self.snow = 4
-        self.hail = 8
+from enum import Enum
+
+
+class Precipitation(Enum):
+    NONE = 1
+    RAIN = 2
+    SNOW = 4
+    HAIL = 8
