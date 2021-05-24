@@ -1,0 +1,32 @@
+
+{
+  "init": {
+    "temperature": {
+      "equator": 27,
+      "pole": -4
+    },
+    "humidity": {
+      "land": {
+        "start": 0.3,
+        "end": 0.05
+      },
+      "water": {
+        "start": 0.8,
+        "end": 0.2
+      }
+    },
+    "pressure": {
+      "start": 1013
+    }
+  },
+  "coefficients": {
+    "pressureConstant": 33.7,
+    "sunEnergyConstant": 1.0
+  },
+  "world": {
+    "xScale": 1.0,
+    "yScale": 1.0,
+    "zScale": 500,
+    "gridSize": 100
+  }
+}
