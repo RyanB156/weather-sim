@@ -27,6 +27,7 @@
     "xScale": 1.0,
     "yScale": 1.0,
     "zScale": 500,
-    "gridSize": 100
+    "zMax": 10,
+    "gridSize": 20
   }
 }

@@ -7,7 +7,6 @@ import random
 class WeatherMap:
 
     def __init__(self, x_extent, y_extent, z_extent, world_map):
-
         self.weather_config = WeatherConfLoader.get_conf()
 
         # Pressure
@@ -16,6 +15,8 @@ class WeatherMap:
         self.zScale = self.weather_config['world']['zScale']
 
         self.grid_size = self.weather_config['world']['gridSize']
+
+        self.world_map = world_map
 
         self.neighbours = [[0, -1], [-1, -1], [-1, 0], [-1, 1], [0, 1], [1, 1], [1, 0], [1, -1]]
 
@@ -47,31 +48,44 @@ class WeatherMap:
         z *= self.zScale
         abs_temperature = temperature + 237
 
-        pressure = self.pressureStart * self.pressureConstant / 100 * math.exp(-z / abs_temperature)
+        pressure = self.pressureStart - 0.2 * self.pressureConstant * math.exp(-z / abs_temperature)
 
         if world_map[x][y]:
-            pressure *= 0.25 + random.random() / 2
+            pressure += 100
         else:
-            pressure *= 0.25 + random.random() / 3
+            pressure += 0
 
         return WeatherSample(temperature, humidity, pressure)
 
     def set_wind(self, elevation):
-        for x in range(1, len(self.samples[elevation])):
-            for y in range(1, len(self.samples[elevation][x])):
+        width = len(self.samples[elevation])
+        height = len(self.samples[elevation][1])
+        for x in range(1, width - 1):
+            for y in range(1, height - 1):
 
                 current_pressure = self.samples[elevation][x][y].pressure
-
                 v = [0, 0]
                 mag = 0
                 for neighbour in self.neighbours:
                     neighbour_pressure = self.samples[elevation][x + neighbour[0]][y + neighbour[1]].pressure
+                    angle = math.atan2(neighbour[1], neighbour[0])
 
                     mag += current_pressure - neighbour_pressure
-                    v[0] += neighbour[0] * (v[0] + current_pressure - neighbour_pressure)
-                    v[1] += neighbour[1] * (v[1] + current_pressure - neighbour_pressure)
+                    v[0] += math.cos(angle) * (v[0] + neighbour_pressure - current_pressure)
+                    v[1] += math.sin(angle) * (v[1] + neighbour_pressure - current_pressure)
 
-                v[0] /= mag
-                v[1] /= mag
+                if mag != 0:
+                    v[0] /= mag
+                    v[1] /= mag
+
                 self.samples[elevation][x][y].wind = v
+
+                # print(f'Wind ({x}, {y}): {v}')
+
+    def simulate(self, time_delta):
+        for h in range(len(self.samples)):
+            self.set_wind(h)
+
+
+
 

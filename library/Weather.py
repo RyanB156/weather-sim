@@ -7,7 +7,7 @@ class WeatherSample:
         self.temperature = temperature
         self.humidity = humidity
         self.pressure = pressure
-        self.precipitation = Precipitation().none
+        self.precipitation = Precipitation.NONE
         self.wind = [0, 0]
 
 
